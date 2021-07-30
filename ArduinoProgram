@@ -1,0 +1,42 @@
+// Libraries
+#include <TFT.h> 
+#include <SPI.h>
+#include <Wire.h>
+#include "Adafruit_VEML6075.h"
+// Defining pinouts for display
+#define cs 10
+#define dc 8
+#define rst 9
+//creating display in code
+TFT TFTscreen = TFT(cs, dc, rst);
+/Creating UV sensor in code
+Adafruit_VEML6075 uv = Adafruit_VEML6075();
+void setup() {
+ Serial.begin(9600);
+  Serial.println("VEML6075 Test");
+  TFTscreen.begin();
+  TFTscreen.width();
+  TFTscreen.height();
+  
+  //sets starting display elements
+  TFTscreen.background(0, 0, 0);
+  TFTscreen.stroke(255,255,255);
+  TFTscreen.setTextSize(2);
+  TFTscreen.text("UV:",10,10);
+  //Checks if UV started
+  if (! uv.begin()) {
+    Serial.println("Failed to communicate with VEML6075 sensor.");
+  }
+  Serial.println("Found the VEML6075 sensor");
+}
+
+void loop() {
+//Puts UV reading into double
+double Light= uv.readUVI();
+//Puts Double into char for display readout
+char UVLight[16];
+sprintf(UVLight,"UV: %d",Light);
+  TFTscreen.background(0, 0, 0);
+  TFTscreen.text(UVLight,10,10);
+  delay(1000);
+}
